@@ -10,6 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Service
 public class PeopleService {
 
@@ -19,11 +22,16 @@ public class PeopleService {
     @Autowired
     RestTemplate restTemplate;
 
-    public ResponseEntity<People[]> getAllPeople() {
-        ResponseEntity<People[]> response =
+    public ResponseEntity<List<People>> getAllPeople() {
+        ResponseEntity<List<People>> response =
                 restTemplate.exchange(url, HttpMethod.GET, null, People[].class);
 
         return response;
+    }
+
+    public void addPerson() {
+        People person = new People();
+        restTemplate.exchange(url, HttpMethod.POST, null, People.class);
     }
 
 

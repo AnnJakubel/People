@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 public class PeopleController {
 
@@ -16,12 +18,14 @@ public class PeopleController {
     PeopleService peopleService;
 
     @GetMapping("people")
-    public ResponseEntity<People[]> getAllPeople() {
+    public ResponseEntity<List<People>> getAllPeople() {
         return peopleService.getAllPeople();
     }
 
-    @PostMapping
-    public void addPeople(@RequestBody People person) {
-
+    @PostMapping("people")
+    public ResponseEntity<People> addPeople(@RequestBody People person) {
+        peopleService.addPerson();
+        return ResponseEntity.ok()
+                .body(person);
     }
 }
