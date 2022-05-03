@@ -25,6 +25,9 @@ public class PeopleService {
     @Value("${people.url}")
     String url;
 
+    @Value("${key.for.url}")
+    String urlKey;
+
     @Autowired
     RestTemplate restTemplate;
 
@@ -48,12 +51,16 @@ public class PeopleService {
         return addedPerson;
     }
 
-    public PeopleResponse getOne(int id) {
-        String fetchIdUrl = "https://my.api.mockaroo.com/kasutajad/" + id + ".json?key=0a646560";
+    public PeopleResponse getOne(Long id) {
+        String fetchIdUrl = "https://my.api.mockaroo.com/kasutajad/" + id + urlKey;
         ResponseEntity <PeopleResponse> response =
                 restTemplate.exchange(fetchIdUrl, HttpMethod.GET, null, PeopleResponse.class);
         return response.getBody();
     }
 
-
+    public String deletePerson(Long id) {
+        String fetchIdUrl = "https://my.api.mockaroo.com/kasutajad/" + id + urlKey;
+        restTemplate.exchange(fetchIdUrl, HttpMethod.DELETE, null, PeopleResponse.class);
+        return "Successfully deleted";
+    }
 }

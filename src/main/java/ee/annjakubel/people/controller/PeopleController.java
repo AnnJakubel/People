@@ -1,5 +1,6 @@
 package ee.annjakubel.people.controller;
 
+import ee.annjakubel.people.cache.PeopleCache;
 import ee.annjakubel.people.model.People;
 import ee.annjakubel.people.model.PeopleResponse;
 import ee.annjakubel.people.service.PeopleService;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 @Log4j2
@@ -17,6 +19,9 @@ public class PeopleController {
 
     @Autowired
     PeopleService peopleService;
+
+    @Autowired
+    PeopleCache cache;
 
     @GetMapping("people")
     public ResponseEntity<List<PeopleResponse>> getAllPeople() {
@@ -27,15 +32,23 @@ public class PeopleController {
     @PostMapping("people")
     public ResponseEntity<PeopleResponse> addPeople() {
         log.info("Initializing function");
-        peopleService.addPerson();
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(peopleService.addPerson());
 
     }
 
     @GetMapping("people/{id}")
-    public ResponseEntity<PeopleResponse> getOnePerson(@PathVariable int id) {
-        peopleService.getOne(id);
-        return ResponseEntity.ok().body(peopleService.getOne(id));
+    public ResponseEntity<PeopleResponse> getOnePerson(@PathVariable Long id) throws ExecutionException {
+        return ResponseEntity.ok().body(cache.getPerson(id));
+    }
+
+    @DeleteMapping("people/{id}")
+    public ResponseEntity<String> deletePerson(@PathVariable Long id) {
+        return ResponseEntity.ok().body(peopleService.deletePerson(id));
+    }
+
+    @PutMapping("people/{id}")
+    public ResponseEntity<PeopleResponse> editPerson(@PathVariable Long id) {
+        return null;
     }
 }
